@@ -1,11 +1,6 @@
 name: 'Lint Code'
 
-on:
-  push:
-    branches: [master, main]
-  pull_request:
-    branches: [master, main]
-  workflow_dispatch
+on: workflow_dispatch
 
 jobs: # list of things to do
   lint_function_js:
