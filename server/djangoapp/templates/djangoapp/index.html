@@ -14,9 +14,29 @@
 </head>
 
     <body>
-    <!-- Remove this line the first time you edit this file -->
-     This is the index page of your Django app!
     <!--Add a nav bar here -->
+
+    <nav class=" navbar navbar-expand-md navbar-dark bg-dark">
+
+        <form action="{% url 'djangoapp:login' %}"  method="post" class="ml-auto">
+            {% if user.is_authenticated %}
+            <div class="ml-auto">
+                <a class="h6 mr-2 text-light">Welcome, {{user.username}}</a>
+                <a class="btn btn-outline-danger btn-sm" type="button" href="{% url 'djangoapp:logout' %}">Logout</a>
+            </div> 
+            {% else %}
+            {% csrf_token %}
+            <input class="" type="text" id="username" name="username" placeholder="UserName:">
+            <input type="password" id="pword" name="pword" placeholder="Password:">
+            <input class="btn btn-outline-success btn-sm" type="submit" value="Login">
+            <a class="btn btn-outline-success btn-sm" type="submit" href="{% url 'djangoapp:registration' %}">Sign Up</a>
+
+            {% endif %}
+
+        </form>
+
+    </nav> 
+
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
             <div class="navbar-header">
