@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
 # from .restapis import related methods
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from datetime import datetime
 import logging
@@ -57,13 +58,10 @@ def login_request(request):
 
 # Create a `logout_request` view to handle sign out request
 def logout_request(request):
-    context = {}
-    # Get the user object based on session id in request
-    print("Log out the user `{}`".format(request.user.username))
-    # Logout user in the request
     logout(request)
-    # Redirect user back to course list view
-    return render(request, 'djangoapp/index.html', context)
+    messages.success(request, ("You Were Logged Out!"))
+    return redirect('djangoapp:index')
+
 
 # Create a `registration_request` view to handle sign up request
 def registration_request(request):
@@ -91,9 +89,10 @@ def registration_request(request):
             # Create user in auth_user table
             user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name,
                                             password=password)
-            # Login the user and redirect to course list page
+            # Login the user and redirect to index page
             login(request, user)
-            return redirect("djangoapp:index")
+            context["message"] = "Sign up successful!"
+            return redirect('djangoapp:index')
         else:
             context["message"]="Account could not be created try again."
             return render(request, 'djangoapp/registration.html', context)
