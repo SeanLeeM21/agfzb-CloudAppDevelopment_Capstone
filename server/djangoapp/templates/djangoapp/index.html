@@ -45,6 +45,19 @@
             </div>
         </div>
     </nav>
+
+    {% if dealership_list %}
+        <ul>
+        {% for dealer in dealership_list %}
+            <div>
+                <b>{{ dealer.full_name}}</b>
+            </div>
+        {% endfor %}
+        </ul>
+    {% else %}
+    <p>No dealers are available.</p>
+    {% endif %}
+
     <!--Add a dealer table here -->
 
     </body>
