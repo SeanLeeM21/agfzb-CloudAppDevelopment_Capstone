@@ -10,7 +10,7 @@
     <body>
         <header class="pb-5">
             <nav class=" navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-                <a class=" navbar-brand" href="{% url 'djangoapp:index' %}">Best Cars &#128663;</a>
+                <a class=" navbar-brand" href="{% url 'djangoapp:index' %}"></a>
                 {% if user.is_authenticated %}
                 <div class="ml-auto">
                     <a class="h6 mr-2 text-light">Welcome, {{user.username}}</a>
@@ -33,26 +33,27 @@
         {% if reviews %}
         <div class="card-columns">
             {% for review in reviews %}
-            
                 <div class="card" >
                     <div class="card-header">
                         <img class="card-img-left" src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png" width="40" height="40">
                     </div>
                     
-                     <div class="card-body text-center">
-                        <h5 class="card-title">{{review.name}}</h5>
+                     <div class="card-body text-left">
+                        <div class="'card-body" style = "min-height: 80px;">
+                            {% if review.purchase == True%}   
+                            <h5>Purchase Info:</h5>
+                            <h5>{{review.car_model}}, {{review.car_make}}</h5>
+                            <h5>{{review.car_year}} </h5>
+                            Purchased on: {{review.purchase_date}}
+                            {% else %}
+                            <br>
+                            Reviewer did not make a purchase.
+                        {% endif %}
+                        </div>
+                        <br>
+                        <h5 class="card-title">Review:</h5>
                         <p class="card-text">{{review.review}}</p>
                      </div>
-                     <div class="card-footer text-muted text-center" style="min-height: 74px;">
-                    {% if review.purchase == True%}   
-                        {{review.car_year}} {{review.car_make}} {{review.car_model}}
-                        <br>
-                        Purchased on: {{review.purchase_date}}
-                    {% else %}
-                        <br>
-                        Reviewer did not make a purchase.
-                    {% endif %}
-                    </div>
                 </div>
                 
             {% endfor %}
@@ -75,15 +76,14 @@
                 </div>
             </div>
         {% else %}
+        <div class="card-columns">
             <div class="card">
                      <div class="card-header">
                             <h5 class="card-title text-center">No Reviews</h5>
                     </div>
-                    <div class="card-body">
-                    
-                    
-                    <p class="card-text text-center">There are no reviews for this dealership. Be the first to write one!</p>
-
+                    <div class="card-body">        
+                    <p class="card-text text-center">There are no reviews for this dealership. </p>
+                    <p class="card-text text-center">Be the first to write one!</p>
                     </div>
                     <div class="card-footer text-center" style="min-height: 74px;">
                         {% if user.is_authenticated %}
@@ -92,13 +92,34 @@
                         {% endif %}
                     </div>
                      
-                </div>
+            </div>
+    
+            <div class="card">
+                    <div class="card-header">
+                           <h5 class="card-title text-center">Write Your Own Review!</h5>
+                   </div>
+                   <div class="card-body text-center">
+                       <p class="card-text">Want to review this dealership?</p>
+                       <p class="card-text">Click the button below!</p>
+                   </div>
+                   <div class="card-footer text-center" style="min-height: 74px;">
+                       {% if user.is_authenticated %}
+                       <a class="btn btn-warning btn-lg" type="submit" href="{% url 'djangoapp:add_review' id %}">Write a Review!</a>
+                   {% else %}
+                       <p class="btn btn-success btn-lg" disabled>Login to write a review!</p>
+                   {% endif %}
+                   </div>
+                    
+               </div>
+           </div>
+        </main>
         {% endif %}
-    </main>
+
     <!-- Add reviews as cards -->
         <!--Footer and navbar-->
         <footer class="navbar navbar-expand-md navbar-dark fixed-bottom bg-dark">
         <div class="container">
+            <a class="btn btn-sm btn-outline-info" type="button" href="{% url 'djangoapp:index' %}">Home</a>
             <a class="btn btn-sm btn-outline-info" type="button" href="{% url 'djangoapp:about' %}">About Us</a>
             <a class="btn btn-sm btn-outline-info" type="button" href="{% url 'djangoapp:contact' %}">Contact Us</a>
         </div>
