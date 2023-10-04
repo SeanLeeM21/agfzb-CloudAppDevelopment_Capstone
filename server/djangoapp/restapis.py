@@ -41,7 +41,14 @@ def get_request(url, **kwargs):
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
-
+def post_request(url, payload, **kwargs):
+    try:
+        response = requests.post(url, params=kwargs, json=payload)
+    except Exception as e:
+        print("Error" ,e)
+    print("Status Code ", {response.status_code})
+    data = json.loads(response.text)
+    return data
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function
 # def get_dealers_from_cf(url, **kwargs):
@@ -104,7 +111,6 @@ def get_dealer_reviews_from_cf(url, **kwargs):
     if json_result:
         reviews = json_result["data"]["docs"]
         for review in reviews:
-            print (review)
             if "car_model" in review:
                 review_obj = DealerReview(
                 dealership=review["dealership"],
@@ -115,8 +121,7 @@ def get_dealer_reviews_from_cf(url, **kwargs):
                 car_make=review["car_make"],
                 car_model=review["car_model"],
                 car_year=review["car_year"],
-                sentiment=[],
-                #sentiment=analyze_review_sentiments(review["review"]),
+                sentiment=analyze_review_sentiments(review["review"]),
                 id=review['id']
                 )
                 results.append(review_obj)
@@ -131,27 +136,26 @@ def get_dealer_reviews_from_cf(url, **kwargs):
                 car_model=[],
                 car_year=[],
                 sentiment=[],
-                #sentiment=analyze_review_sentiments(review["review"]),
                 id=review['id']
                 )
                 results.append(review_obj)
-    #print(results[0])
     return results
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
 # def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
-def analyze_review_sentiments(text):
-    url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/15be9850-7398-4f67-88ea-082137ddaa59"
-    api_key = "6Q_BypRlDaJKxLDAQU25dVElZ-lAEZnMd8inGWzBu_AZ"
+def analyze_review_sentiments(text, **kwargs):
+    url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/5ae6b179-776f-4e75-97ad-3f73e9db9b25"
+    api_key = "qmP68OHDe5jjdD5fXMFWeXhYNFGai9es3y2yf7Ep_CRD"
     authenticator = IAMAuthenticator(api_key)
+
     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2022-08-01',authenticator=authenticator)
     natural_language_understanding.set_service_url(url)
     response = natural_language_understanding.analyze( text=text+"hello hello hello",features=Features(sentiment=SentimentOptions(targets=[text+"hello hello hello"]))).get_result()
-    label=json.dumps(response, indent=2)
+    label = json.dumps(response, indent=2)
     label = response['sentiment']['document']['label']
-    
-    return(label)
+
+    return label
 
 
